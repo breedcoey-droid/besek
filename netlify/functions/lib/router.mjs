@@ -14,7 +14,14 @@ import {
 import { renderPage, loginPage } from "./panel.mjs";
 
 function redirectTo(request, path, code = 303) {
-  return Response.redirect(new URL(path, request.url).toString(), code);
+  // JANGAN pakai Response.redirect(): header responsenya immutable —
+  // undici melempar "TypeError: immutable" saat .headers.set() dipanggil,
+  // dan login/logout perlu menambahkan Set-Cookie ke redirect ini.
+  // new Response punya header yang bisa diubah, jadi pakai itu.
+  return new Response(null, {
+    status: code,
+    headers: { Location: new URL(path, request.url).toString() },
+  });
 }
 
 function msgUrl(tab, msg) {
