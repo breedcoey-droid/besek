@@ -12,6 +12,9 @@
 # Semua path lain dilayani function "app" (panel web). Status 200 =
 # rewrite (bukan redirect): URL asli di browser tetap dipertahankan,
 # jadi routing di app.mjs memakai new URL(request.url).pathname.
+# force = true WAJIB: tanpa ini, file statis public/index.html
+# "menang" atas redirect (shadowing bawaan Netlify) dan yang tampil
+# hanya placeholder — panel tidak pernah sampai ke function.
 # (Catatan: JANGAN tambah rule untuk path /.netlify/* — Netlify menolak
 # rule yang path-nya diawali /.netlify. Path internal function tetap
 # bisa dipanggil langsung; app.mjs membuang awalan itu bila perlu.)
@@ -19,3 +22,4 @@
   from = "/*"
   to = "/.netlify/functions/app"
   status = 200
+  force = true
